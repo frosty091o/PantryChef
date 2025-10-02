@@ -14,6 +14,10 @@
 		AA3628912E8EEEB000E432AF /* ContainersPreview in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628902E8EEEB000E432AF /* ContainersPreview */; };
 		AA3628932E8EEEB000E432AF /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628922E8EEEB000E432AF /* DequeModule */; };
 		AA3628962E8EEED200E432AF /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628952E8EEED200E432AF /* SQLite */; };
+		AA3628C22E8EF42300E432AF /* RecipeLocal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3628C02E8EF42300E432AF /* RecipeLocal+CoreDataClass.swift */; };
+		AA3628C32E8EF42300E432AF /* PantryItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3628BE2E8EF42300E432AF /* PantryItem+CoreDataClass.swift */; };
+		AA3628C42E8EF42300E432AF /* RecipeLocal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3628C12E8EF42300E432AF /* RecipeLocal+CoreDataProperties.swift */; };
+		AA3628C52E8EF42300E432AF /* PantryItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3628BF2E8EF42300E432AF /* PantryItem+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +41,10 @@
 		AA3628542E8EEDA900E432AF /* PantryChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PantryChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3628682E8EEDAB00E432AF /* PantryChefTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PantryChefTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3628722E8EEDAB00E432AF /* PantryChefUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PantryChefUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA3628BE2E8EF42300E432AF /* PantryItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PantryItem+CoreDataClass.swift"; path = "Data/CoreData/PantryItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA3628BF2E8EF42300E432AF /* PantryItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PantryItem+CoreDataProperties.swift"; path = "Data/CoreData/PantryItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AA3628C02E8EF42300E432AF /* RecipeLocal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RecipeLocal+CoreDataClass.swift"; path = "Data/CoreData/RecipeLocal+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA3628C12E8EF42300E432AF /* RecipeLocal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RecipeLocal+CoreDataProperties.swift"; path = "Data/CoreData/RecipeLocal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -125,6 +133,10 @@
 		AA36284B2E8EEDA900E432AF = {
 			isa = PBXGroup;
 			children = (
+				AA3628BE2E8EF42300E432AF /* PantryItem+CoreDataClass.swift */,
+				AA3628BF2E8EF42300E432AF /* PantryItem+CoreDataProperties.swift */,
+				AA3628C02E8EF42300E432AF /* RecipeLocal+CoreDataClass.swift */,
+				AA3628C12E8EF42300E432AF /* RecipeLocal+CoreDataProperties.swift */,
 				AA3628AE2E8EF21900E432AF /* Resources */,
 				AA3628AD2E8EF21400E432AF /* Support */,
 				AA3628AC2E8EF20E00E432AF /* Data */,
@@ -306,6 +318,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3628C22E8EF42300E432AF /* RecipeLocal+CoreDataClass.swift in Sources */,
+				AA3628C32E8EF42300E432AF /* PantryItem+CoreDataClass.swift in Sources */,
+				AA3628C42E8EF42300E432AF /* RecipeLocal+CoreDataProperties.swift in Sources */,
+				AA3628C52E8EF42300E432AF /* PantryItem+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
