@@ -14,9 +14,14 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        // Seed sample PantryItems for previews
+        for i in 0..<10 {
+            let item = PantryItem(context: viewContext)
+            item.id = UUID()
+            item.name = "Sample \(i)"
+            item.quantity = Double(i + 1)
+            item.unit = "pc"
+            item.updatedAt = Date()
         }
         do {
             try viewContext.save()
@@ -24,7 +29,7 @@ struct PersistenceController {
             // Replace this implementation with code to handle the error appropriately.
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            fatalError("Unresolved error \n(nsError), \n(nsError.userInfo)")
         }
         return result
     }()

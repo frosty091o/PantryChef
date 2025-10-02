@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var prefs = AppPreferences.shared
+    @AppStorage("diet") private var diet: String = "none"
+    @AppStorage("intolerances") private var intolerancesCSV: String = ""
+    @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
 
     var body: some View {
         Form {
             Section("Diet") {
-                Picker("Diet", selection: $prefs.diet) {
+                Picker("Diet", selection: $diet) {
                     Text("None").tag("none")
                     Text("Vegetarian").tag("vegetarian")
                     Text("Vegan").tag("vegan")
@@ -23,13 +25,13 @@ struct SettingsView: View {
             }
 
             Section("Intolerances") {
-                TextField("Comma separated (e.g., peanut, soy)", text: $prefs.intolerancesCSV)
+                TextField("Comma separated (e.g., peanut, soy)", text: $intolerancesCSV)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
             }
 
             Section("App") {
-                Toggle("I’ve completed onboarding", isOn: $prefs.hasOnboarded)
+                Toggle("I’ve completed onboarding", isOn: $hasOnboarded)
             }
         }
         .navigationTitle("Settings")

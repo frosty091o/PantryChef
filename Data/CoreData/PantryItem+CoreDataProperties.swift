@@ -1,3 +1,5 @@
+#if MANUAL_CORE_DATA
+
 //
 //  PantryItem+CoreDataProperties.swift
 //  PantryChef
@@ -29,3 +31,5 @@ extension PantryItem {
 extension PantryItem : Identifiable {
 
 }
+
+#endif

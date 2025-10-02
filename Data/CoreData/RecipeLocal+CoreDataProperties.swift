@@ -1,3 +1,5 @@
+#if MANUAL_CORE_DATA
+
 //
 //  RecipeLocal+CoreDataProperties.swift
 //  PantryChef
@@ -30,3 +32,5 @@ extension RecipeLocal {
 extension RecipeLocal : Identifiable {
 
 }
+
+#endif

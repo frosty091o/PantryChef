@@ -7,14 +7,14 @@
 
 import CoreData
 
-extension PantryItem {
+extension PantryItemEntity {
     static func create(
         name: String,
         qty: Double? = nil,
         unit: String? = nil,
         in ctx: NSManagedObjectContext
-    ) -> PantryItem {
-        let item = PantryItem(context: ctx)
+    ) -> PantryItemEntity {
+        let item = PantryItemEntity(context: ctx)
         item.id = UUID()
         item.name = name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         item.quantity = qty ?? 0

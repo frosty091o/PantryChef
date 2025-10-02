@@ -1,3 +1,5 @@
+#if MANUAL_CORE_DATA
+
 //
 //  RecipeLocal+CoreDataClass.swift
 //  PantryChef
@@ -15,3 +17,5 @@ public typealias RecipeLocalCoreDataClassSet = NSSet
 public class RecipeLocal: NSManagedObject {
 
 }
+
+#endif

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Global app settings backed by UserDefaults.
 /// Usage: AppPreferences.shared or inject as an EnvironmentObject.
@@ -27,3 +28,4 @@ final class AppPreferences: ObservableObject {
         set { intolerancesCSV = newValue.joined(separator: ",") }
     }
 }
+
