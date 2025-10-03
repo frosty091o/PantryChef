@@ -15,13 +15,15 @@ struct PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         // Seed sample PantryItems for previews
-        for i in 0..<10 {
-            let item = PantryItem(context: viewContext)
-            item.id = UUID()
-            item.name = "Sample \(i)"
-            item.quantity = Double(i + 1)
-            item.unit = "pc"
-            item.updatedAt = Date()
+        if let entity = NSEntityDescription.entity(forEntityName: "PantryItem", in: viewContext) {
+            for i in 0..<10 {
+                let item = NSManagedObject(entity: entity, insertInto: viewContext)
+                item.setValue(UUID(), forKey: "id")
+                item.setValue("Sample \(i)", forKey: "name")
+                item.setValue(Double(i + 1), forKey: "quantity")
+                item.setValue("pc", forKey: "unit")
+                item.setValue(Date(), forKey: "updatedAt")
+            }
         }
         do {
             try viewContext.save()
@@ -29,15 +31,20 @@ struct PersistenceController {
             // Replace this implementation with code to handle the error appropriately.
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
-            fatalError("Unresolved error \n(nsError), \n(nsError.userInfo)")
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
         return result
     }()
 
-    let container: NSPersistentCloudKitContainer
+    let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "PantryChef")
+        container = NSPersistentContainer(name: "PantryChef")
+        // Enable lightweight migration for local store
+        if let description = container.persistentStoreDescriptions.first {
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+        }
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
@@ -57,6 +64,8 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 }
+
