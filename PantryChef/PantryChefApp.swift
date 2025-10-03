@@ -16,6 +16,7 @@ struct PantryChefApp: App {
     init() {
         // Configure Firebase on app launch
         FirebaseApp.configure()
+        
     }
 
     var body: some Scene {

@@ -53,7 +53,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Untitled.swift,
 			);
 			target = AA3628532E8EEDA900E432AF /* PantryChef */;
 		};

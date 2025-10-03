@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct ContentView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     var body: some View {
         NavigationStack {
             TabView {
-                PantryView()
+                PantryView(context: viewContext)
                     .tabItem { Label("Pantry", systemImage: "tray") }
 
                 DiscoverView()
@@ -34,4 +37,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
