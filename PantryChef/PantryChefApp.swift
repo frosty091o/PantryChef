@@ -7,10 +7,16 @@
 
 import SwiftUI
 import CoreData
+import FirebaseCore   
 
 @main
 struct PantryChefApp: App {
     let persistenceController = PersistenceController.shared
+
+    init() {
+        // Configure Firebase on app launch
+        FirebaseApp.configure()
+    }
 
     var body: some Scene {
         WindowGroup {
