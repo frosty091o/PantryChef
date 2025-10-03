@@ -56,6 +56,13 @@
 			);
 			target = AA3628532E8EEDA900E432AF /* PantryChef */;
 		};
+		AA36290B2E903AE800E432AF /* Exceptions for "Features" folder in "PantryChef" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Discover/Untitled.swift,
+			);
+			target = AA3628532E8EEDA900E432AF /* PantryChef */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +86,9 @@
 		};
 		AA3628AB2E8EF1FB00E432AF /* Features */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA36290B2E903AE800E432AF /* Exceptions for "Features" folder in "PantryChef" target */,
+			);
 			path = Features;
 			sourceTree = "<group>";
 		};
