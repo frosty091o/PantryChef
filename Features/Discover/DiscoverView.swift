@@ -20,35 +20,47 @@ struct DiscoverView: View {
             VStack {
                 switch vm.state {
                 case .idle:
-                    Text("Search recipes using your pantry items.")
-                        .foregroundStyle(.secondary)
+                    ContentUnavailableView(
+                        "Discover recipes",
+                        systemImage: "magnifyingglass",
+                        description: Text("Add some pantry items, then search to find matching recipes.")
+                    )
                 case .loading:
                     ProgressView("Searching…")
                 case .results(let recipes):
-                    List(recipes) { recipe in
-                        NavigationLink {
-                            RecipeDetailView(
-                                id: recipe.id,
-                                title: recipe.title,
-                                imageURL: recipe.image
-                            )
-                        } label: {
-                            HStack {
-                                AsyncImage(url: URL(string: recipe.image ?? "")) { img in
-                                    img.resizable().scaledToFill()
-                                } placeholder: {
-                                    Color.gray
-                                }
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                    if recipes.isEmpty {
+                        ContentUnavailableView(
+                            "No matches",
+                            systemImage: "fork.knife",
+                            description: Text("Try adding more ingredients or different ones.")
+                        )
+                    } else {
+                        List(recipes) { recipe in
+                            NavigationLink {
+                                RecipeDetailView(
+                                    id: recipe.id,
+                                    title: recipe.title,
+                                    imageURL: recipe.image
+                                )
+                            } label: {
+                                HStack {
+                                    AsyncImage(url: URL(string: recipe.image ?? "")) { img in
+                                        img.resizable().scaledToFill()
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                                VStack(alignment: .leading) {
-                                    Text(recipe.title).font(.headline)
-                                    Text("\(recipe.usedIngredientCount ?? 0) used, \(recipe.missedIngredientCount ?? 0) missing")
-                                        .font(.subheadline).foregroundStyle(.secondary)
+                                    VStack(alignment: .leading) {
+                                        Text(recipe.title).font(.headline)
+                                        Text("\(recipe.usedIngredientCount ?? 0) used, \(recipe.missedIngredientCount ?? 0) missing")
+                                            .font(.subheadline).foregroundStyle(.secondary)
+                                    }
                                 }
                             }
                         }
+                        .listStyle(.insetGrouped)
                     }
                 case .error(let msg):
                     ErrorView(message: msg) {
@@ -62,6 +74,7 @@ struct DiscoverView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(items.isEmpty)
                 .padding()
             }
             .navigationTitle("Discover")

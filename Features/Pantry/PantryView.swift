@@ -48,10 +48,26 @@ struct PantryView: View {
                 .padding()
 
                 if items.isEmpty {
-                    Text("No pantry items yet.\nAdd some ingredients to get started!")
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
+                    if #available(iOS 17.0, *) {
+                        ContentUnavailableView(
+                            "No pantry items yet",
+                            systemImage: "tray",
+                            description: Text("Add ingredients to start getting recipe suggestions.")
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        VStack(spacing: 8) {
+                            Image(systemName: "tray")
+                                .font(.largeTitle)
+                                .foregroundStyle(.secondary)
+                            Text("No pantry items yet").font(.headline)
+                            Text("Add ingredients to start getting recipe suggestions.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding()
+                    }
                 } else {
                     List {
                         ForEach(items) { item in
@@ -69,6 +85,7 @@ struct PantryView: View {
                             offsets.map { items[$0] }.forEach(vm.deleteItem)
                         }
                     }
+                    .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle("Pantry")
