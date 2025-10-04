@@ -11,6 +11,8 @@ import CoreData
 struct RecipeDetailView: View {
     @Environment(\.managedObjectContext) private var ctx
     @StateObject private var vm: RecipeDetailViewModel
+    @State private var showNearby = false
+    @StateObject private var loc = LocationManager()
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \PantryItem.updatedAt, ascending: false)]
@@ -77,6 +79,14 @@ struct RecipeDetailView: View {
                             ForEach(need, id: \.name) { ing in
                                 Label("\(ing.name.capitalized)\(amount(ing))", systemImage: "xmark.circle")
                             }
+                            Button {
+                                loc.request()
+                                showNearby = true
+                            } label: {
+                                Label("Find nearby supermarkets", systemImage: "mappin.and.ellipse")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(.top, 8)
                         }
                     }
 
@@ -116,6 +126,9 @@ struct RecipeDetailView: View {
             if vm.detail == nil {
                 await vm.load()
             }
+        }
+        .sheet(isPresented: $showNearby) {
+            NearbyStoresView(userCoordinate: loc.coordinate)
         }
     }
 
