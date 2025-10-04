@@ -5,13 +5,6 @@
 //  Created by Ethan on 3/10/2025.
 //
 
-//
-//  DiscoverView.swift
-//  PantryChef
-//
-//  Created by Ethan on 3/10/2025.
-//
-
 import SwiftUI
 
 struct DiscoverView: View {
@@ -33,19 +26,27 @@ struct DiscoverView: View {
                     ProgressView("Searching…")
                 case .results(let recipes):
                     List(recipes) { recipe in
-                        HStack {
-                            AsyncImage(url: URL(string: recipe.image ?? "")) { img in
-                                img.resizable().scaledToFill()
-                            } placeholder: {
-                                Color.gray
-                            }
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        NavigationLink {
+                            RecipeDetailView(
+                                id: recipe.id,
+                                title: recipe.title,
+                                imageURL: recipe.image
+                            )
+                        } label: {
+                            HStack {
+                                AsyncImage(url: URL(string: recipe.image ?? "")) { img in
+                                    img.resizable().scaledToFill()
+                                } placeholder: {
+                                    Color.gray
+                                }
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                            VStack(alignment: .leading) {
-                                Text(recipe.title).font(.headline)
-                                Text("\(recipe.usedIngredientCount ?? 0) used, \(recipe.missedIngredientCount ?? 0) missing")
-                                    .font(.subheadline).foregroundStyle(.secondary)
+                                VStack(alignment: .leading) {
+                                    Text(recipe.title).font(.headline)
+                                    Text("\(recipe.usedIngredientCount ?? 0) used, \(recipe.missedIngredientCount ?? 0) missing")
+                                        .font(.subheadline).foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }

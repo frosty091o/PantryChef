@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-internal import CoreData
+import CoreData
+import Combine
 
 struct RecipeDetailView: View {
     @Environment(\.managedObjectContext) private var ctx
