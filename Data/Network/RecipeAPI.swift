@@ -14,25 +14,40 @@ enum APIError: Error {
 final class RecipeAPI {
     static let shared = RecipeAPI()
     private init() {}
-
+    
     func findRecipes(ingredients: [String]) async throws -> [Recipe] {
         guard !ingredients.isEmpty else { return [] }
-
+        
         let query = ingredients.joined(separator: ",")
         let urlString = "https://api.spoonacular.com/recipes/findByIngredients" +
-                        "?ingredients=\(query)&number=10&apiKey=\(Secrets.spoonacularKey)"
-
+        "?ingredients=\(query)&number=10&apiKey=\(Secrets.spoonacularKey)"
+        
         guard let url = URL(string: urlString) else { throw APIError.invalidURL }
-
+        
         let (data, response) = try await URLSession.shared.data(from: url)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else {
             throw APIError.requestFailed
         }
-
+        
         do {
             return try JSONDecoder().decode([Recipe].self, from: data)
         } catch {
             print(String(data: data, encoding: .utf8) ?? "No response body")
+            throw APIError.decodingFailed
+        }
+        
+        
+    }
+}
+extension RecipeAPI {
+    func getRecipeDetail(id: Int) async throws -> RecipeDetailDTO {
+        let urlStr = "https://api.spoonacular.com/recipes/\(id)/information?includeNutrition=true&apiKey=\(Secrets.spoonacularKey)"
+        guard let url = URL(string: urlStr) else { throw APIError.invalidURL }
+        let (data, resp) = try await URLSession.shared.data(from: url)
+        guard (resp as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.requestFailed }
+        do { return try JSONDecoder().decode(RecipeDetailDTO.self, from: data) }
+        catch {
+            print(String(data: data, encoding: .utf8) ?? "")
             throw APIError.decodingFailed
         }
     }

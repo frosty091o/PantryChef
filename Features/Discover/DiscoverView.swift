@@ -5,6 +5,13 @@
 //  Created by Ethan on 3/10/2025.
 //
 
+//
+//  DiscoverView.swift
+//  PantryChef
+//
+//  Created by Ethan on 3/10/2025.
+//
+
 import SwiftUI
 
 struct DiscoverView: View {

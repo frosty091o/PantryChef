@@ -14,22 +14,40 @@ final class FirestoreSync {
     private init() {}
     private let db = Firestore.firestore()
 
-    // Minimal push for PantryItem (adjust field names to your Core Data model)
+    // MARK: - Pantry sync
+
     func pushPantryItem(_ item: PantryItem) {
-        guard let id = item.id?.uuidString, let name = item.name else { return }
+        guard let id = item.id?.uuidString,
+              let name = item.name else { return }
+
         let data: [String: Any] = [
             "name": name,
             "quantity": item.quantity,
             "unit": item.unit ?? "",
             "updatedAt": (item.updatedAt ?? Date()).timeIntervalSince1970
         ]
+
         db.collection("pantry").document(id).setData(data, merge: true)
     }
 
-    // Minimal pull (you’ll map this back into Core Data later)
     func pullPantryItems(completion: @escaping ([[String: Any]]) -> Void) {
         db.collection("pantry").getDocuments { snap, _ in
             completion(snap?.documents.map { $0.data() } ?? [])
         }
+    }
+
+    // MARK: - Favourites sync
+
+    func pushFavourite(_ fav: RecipeLocal) {
+        guard let id = fav.id else { return }
+
+        let data: [String: Any] = [
+            "title": fav.title ?? "",
+            "imageURL": fav.imageURL ?? "",
+            "isFavourite": fav.isFavourite,
+            "updatedAt": (fav.updatedAt ?? Date()).timeIntervalSince1970
+        ]
+
+        db.collection("favourites").document(id).setData(data, merge: true)
     }
 }
