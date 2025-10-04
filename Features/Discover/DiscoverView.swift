@@ -51,7 +51,9 @@ struct DiscoverView: View {
                         }
                     }
                 case .error(let msg):
-                    Text(msg).foregroundStyle(.red)
+                    ErrorView(message: msg) {
+                        Task { await vm.search(using: Array(items)) }
+                    }
                 }
 
                 Button("Find Recipes") {

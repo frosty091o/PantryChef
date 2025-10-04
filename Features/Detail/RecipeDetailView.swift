@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  RecipeDetailView.swift
 //  PantryChef
 //
 //  Created by Ethan on 4/10/2025.
@@ -100,10 +100,8 @@ struct RecipeDetailView: View {
                 } else if vm.loading {
                     ProgressView("Loading details…")
                 } else if let e = vm.error {
-                    VStack(spacing: 8) {
-                        Text(e).foregroundStyle(.red)
-                        Button("Retry") { Task { await vm.load() } }
-                            .buttonStyle(.borderedProminent)
+                    ErrorView(message: e) {
+                        Task { await vm.load() }
                     }
                 } else {
                     Button("Load details") { Task { await vm.load() } }
