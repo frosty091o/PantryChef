@@ -7,11 +7,26 @@
 
 import SwiftUI
 import CoreData
-import Combine
 
 struct RecipeDetailView: View {
     @Environment(\.managedObjectContext) private var ctx
     @StateObject private var vm: RecipeDetailViewModel
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \PantryItem.updatedAt, ascending: false)]
+    ) private var pantry: FetchedResults<PantryItem>
+
+    // Lowercased, trimmed pantry names for case-insensitive matching
+    private var pantrySet: Set<String> {
+        Set(
+            pantry.compactMap {
+                $0.name?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .lowercased()
+            }
+            .filter { !$0.isEmpty }
+        )
+    }
 
     init(id: Int, title: String, imageURL: String?) {
         _vm = StateObject(wrappedValue:
@@ -38,9 +53,30 @@ struct RecipeDetailView: View {
 
                     if let ings = d.extendedIngredients, !ings.isEmpty {
                         Text("Ingredients").font(.headline).padding(.top, 8)
-                        ForEach(ings, id: \.name) { ing in
-                            Text("• \(ing.name.capitalized)\(amount(ing))")
+
+                        // You have
+                        let have = ings.filter { pantrySet.contains($0.name.lowercased()) }
+                        if !have.isEmpty {
+                            Text("You have")
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                                .padding(.top, 2)
+                            ForEach(have, id: \.name) { ing in
+                                Label("\(ing.name.capitalized)\(amount(ing))", systemImage: "checkmark.circle")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        // You need
+                        let need = ings.filter { !pantrySet.contains($0.name.lowercased()) }
+                        if !need.isEmpty {
+                            Text("You need")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .padding(.top, have.isEmpty ? 2 : 8)
+                            ForEach(need, id: \.name) { ing in
+                                Label("\(ing.name.capitalized)\(amount(ing))", systemImage: "xmark.circle")
+                            }
                         }
                     }
 
@@ -54,7 +90,11 @@ struct RecipeDetailView: View {
                 } else if vm.loading {
                     ProgressView("Loading details…")
                 } else if let e = vm.error {
-                    Text(e).foregroundStyle(.red)
+                    VStack(spacing: 8) {
+                        Text(e).foregroundStyle(.red)
+                        Button("Retry") { Task { await vm.load() } }
+                            .buttonStyle(.borderedProminent)
+                    }
                 } else {
                     Button("Load details") { Task { await vm.load() } }
                         .buttonStyle(.borderedProminent)
@@ -71,6 +111,11 @@ struct RecipeDetailView: View {
                 Image(systemName: vm.isFavourite ? "heart.fill" : "heart")
             }
             .accessibilityLabel(vm.isFavourite ? "Remove from favourites" : "Save to favourites")
+        }
+        .task {
+            if vm.detail == nil {
+                await vm.load()
+            }
         }
     }
 
