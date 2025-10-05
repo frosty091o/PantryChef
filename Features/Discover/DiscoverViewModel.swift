@@ -16,6 +16,12 @@ final class DiscoverViewModel: ObservableObject {
     }
 
     @Published private(set) var state: State = .idle
+    @Published var searchHistory: [SearchHistoryItem] = []
+    @Published var showHistory = false
+
+    init() {
+        loadSearchHistory()
+    }
 
     func search(using pantryItems: [PantryItem]) async {
         let names = pantryItems.compactMap { $0.name }
@@ -28,8 +34,22 @@ final class DiscoverViewModel: ObservableObject {
         do {
             let recipes = try await RecipeAPI.shared.findRecipes(ingredients: names)
             state = .results(recipes)
+            
+            // Save to SQLite history
+            let query = names.joined(separator: ", ")
+            RecipeHistoryDB.shared.saveSearch(query: query, resultCount: recipes.count)
+            loadSearchHistory()
         } catch {
             state = .error("Could not load recipes")
         }
+    }
+    
+    func loadSearchHistory() {
+        searchHistory = RecipeHistoryDB.shared.getRecentSearches()
+    }
+    
+    func clearHistory() {
+        RecipeHistoryDB.shared.clearSearchHistory()
+        loadSearchHistory()
     }
 }
