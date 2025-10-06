@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum APIError: Error {
     case invalidURL, requestFailed, decodingFailed
@@ -18,9 +19,26 @@ final class RecipeAPI {
     func findRecipes(ingredients: [String]) async throws -> [Recipe] {
         guard !ingredients.isEmpty else { return [] }
         
+        // Changed to complexSearch endpoint - supports diet and intolerances
         let query = ingredients.joined(separator: ",")
-        let urlString = "https://api.spoonacular.com/recipes/findByIngredients" +
-        "?ingredients=\(query)&number=10&apiKey=\(Secrets.spoonacularKey)"
+        
+        // Get filters from UserDefaults
+        let diet = UserDefaults.standard.string(forKey: "diet") ?? "none"
+        let intolerances = UserDefaults.standard.string(forKey: "intolerances") ?? ""
+        
+        var urlString = "https://api.spoonacular.com/recipes/complexSearch" +
+        "?includeIngredients=\(query)&number=10&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
+        
+        // Add diet filter if not "none"
+        if diet != "none" {
+            urlString += "&diet=\(diet)"
+        }
+        
+        // Add intolerances if any
+        if !intolerances.isEmpty {
+            let cleaned = intolerances.replacingOccurrences(of: " ", with: "")
+            urlString += "&intolerances=\(cleaned)"
+        }
         
         guard let url = URL(string: urlString) else { throw APIError.invalidURL }
         
@@ -30,15 +48,16 @@ final class RecipeAPI {
         }
         
         do {
-            return try JSONDecoder().decode([Recipe].self, from: data)
+            // complexSearch returns different format
+            let searchResult = try JSONDecoder().decode(ComplexSearchResult.self, from: data)
+            return searchResult.results
         } catch {
             print(String(data: data, encoding: .utf8) ?? "No response body")
             throw APIError.decodingFailed
         }
-        
-        
     }
 }
+
 extension RecipeAPI {
     func getRecipeDetail(id: Int) async throws -> RecipeDetailDTO {
         let urlStr = "https://api.spoonacular.com/recipes/\(id)/information?includeNutrition=true&apiKey=\(Secrets.spoonacularKey)"
@@ -52,3 +71,14 @@ extension RecipeAPI {
         }
     }
 }
+
+//complexSearch response
+struct ComplexSearchResult: Decodable {
+    let results: [Recipe]
+}
+
+
+extension Recipe {
+
+}
+

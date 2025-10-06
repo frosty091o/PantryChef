@@ -23,6 +23,8 @@ struct PantryChefApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(AppPreferences.shared)
         }
     }
 }
+

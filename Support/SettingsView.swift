@@ -8,28 +8,10 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("diet") private var diet: String = "none"
-    @AppStorage("intolerances") private var intolerancesCSV: String = ""
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
 
     var body: some View {
         Form {
-            Section("Diet") {
-                Picker("Diet", selection: $diet) {
-                    Text("None").tag("none")
-                    Text("Vegetarian").tag("vegetarian")
-                    Text("Vegan").tag("vegan")
-                    Text("Gluten-Free").tag("glutenFree")
-                }
-                .pickerStyle(.segmented)
-            }
-
-            Section("Intolerances") {
-                TextField("Comma separated (e.g., peanut, soy)", text: $intolerancesCSV)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-            }
-            
             Section("Analytics") {
                 NavigationLink(destination: AnalyticsView()) {
                     Label("View Analytics", systemImage: "chart.bar")
@@ -39,7 +21,26 @@ struct SettingsView: View {
             Section("App") {
                 Toggle("I've completed onboarding", isOn: $hasOnboarded)
             }
+            
+            Section {
+                HStack {
+                    Text("Version")
+                    Spacer()
+                    Text("1.0")
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("About")
+            } footer: {
+                Text("PantryChef - Find recipes based on your ingredients")
+            }
         }
         .navigationTitle("Settings")
+    }
+}
+
+#Preview {
+    NavigationStack {
+        SettingsView()
     }
 }

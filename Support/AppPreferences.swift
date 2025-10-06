@@ -28,4 +28,3 @@ final class AppPreferences: ObservableObject {
         set { intolerancesCSV = newValue.joined(separator: ",") }
     }
 }
-
