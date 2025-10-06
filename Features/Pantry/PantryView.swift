@@ -23,29 +23,44 @@ struct PantryView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                HStack {
-                    TextField("Ingredient name", text: $vm.name)
-                        .textFieldStyle(.roundedBorder)
+            VStack(spacing: 0) {
+                // Input section - slightly improved layout
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        TextField("Ingredient name", text: $vm.name)
+                            .textFieldStyle(.roundedBorder)
+                            .autocorrectionDisabled()
 
-                    TextField("Qty", text: $vm.quantity)
-                        .frame(width: 60)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.decimalPad)
+                        TextField("Qty", text: $vm.quantity)
+                            .frame(width: 55)
+                            .textFieldStyle(.roundedBorder)
+                            .keyboardType(.decimalPad)
 
-                    TextField("Unit", text: $vm.unit)
-                        .frame(width: 80)
-                        .textFieldStyle(.roundedBorder)
+                        TextField("Unit", text: $vm.unit)
+                            .frame(width: 70)
+                            .textFieldStyle(.roundedBorder)
+                            .autocorrectionDisabled()
 
-                    Button {
-                        vm.addItem()
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
+                        Button {
+                            vm.addItem()
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(vm.name.isEmpty ? .gray : .blue)
+                        }
+                        .disabled(vm.name.isEmpty)
                     }
-                    .disabled(vm.name.isEmpty)
+                    
+                    if !vm.name.isEmpty || !vm.quantity.isEmpty || !vm.unit.isEmpty {
+                        Button("Clear") {
+                            vm.clearForm()
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
                 }
                 .padding()
+                .background(Color(.systemGroupedBackground))
 
                 if items.isEmpty {
                     if #available(iOS 17.0, *) {
@@ -64,6 +79,7 @@ struct PantryView: View {
                             Text("Add ingredients to start getting recipe suggestions.")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding()
@@ -71,21 +87,29 @@ struct PantryView: View {
                 } else {
                     List {
                         ForEach(items) { item in
-                            VStack(alignment: .leading) {
-                                Text(item.name ?? "Unnamed")
-                                    .font(.headline)
-                                if item.quantity > 0 {
-                                    Text("\(item.quantity, specifier: "%.1f") \(item.unit ?? "")")
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.name?.capitalized ?? "Unnamed")
                                         .font(.subheadline)
-                                        .foregroundStyle(.secondary)
+                                        .fontWeight(.medium)
+                                    if item.quantity > 0 {
+                                        Text("\(item.quantity, specifier: "%.1f") \(item.unit ?? "")")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                Spacer()
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                                    .font(.title3)
                             }
+                            .padding(.vertical, 6)
                         }
                         .onDelete { offsets in
                             offsets.map { items[$0] }.forEach(vm.deleteItem)
                         }
                     }
-                    .listStyle(.insetGrouped)
+                    .listStyle(.plain)
                 }
             }
             .navigationTitle("Pantry")

@@ -8,7 +8,6 @@
 import SwiftUI
 import CoreData
 
-
 struct SettingsView: View {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = false
@@ -69,17 +68,33 @@ struct SettingsView: View {
                 Text("Your pantry and favorites are automatically synced to Firebase.")
             }
             
-            Section("Preferences") {
-                //(UserDefaults wrapper)
-                // Values are saved but the actual features aren't implemented yet
+            Section {
+                // Note: These features demonstrate @AppStorage (UserDefaults wrapper)
+                // Values are saved but the actual features aren't fully implemented yet
+                // Future: notificationsEnabled would schedule local notifications
                 
                 Toggle(isOn: $notificationsEnabled) {
-                    Label("Recipe Reminders", systemImage: "bell")
+                    HStack {
+                        Label("Recipe Reminders", systemImage: "bell")
+                        Spacer()
+                        Text("Coming Soon")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(4)
+                    }
                 }
                 
                 Toggle(isOn: $hasOnboarded) {
-                    Label("Show Tips", systemImage: "lightbulb")
+                    Label("Skip Onboarding Tutorial", systemImage: "book.closed")
                 }
+            } header: {
+                Text("Development Features")
+            } footer: {
+                Text("Recipe Reminders is a placeholder for UserDefaults demo. Toggle 'Skip Onboarding' OFF to see the tutorial every time you open the app (useful for testing).")
+                    .font(.caption)
             }
 
             Section {

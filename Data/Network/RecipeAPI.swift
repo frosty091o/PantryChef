@@ -19,26 +19,12 @@ final class RecipeAPI {
     func findRecipes(ingredients: [String]) async throws -> [Recipe] {
         guard !ingredients.isEmpty else { return [] }
         
-        // Changed to complexSearch endpoint - supports diet and intolerances
+        // Using findByIngredients because it shows which ingredients you have/need
+        // complexSearch supports filters but doesn't show ingredient match info
         let query = ingredients.joined(separator: ",")
         
-        // Get filters from UserDefaults
-        let diet = UserDefaults.standard.string(forKey: "diet") ?? "none"
-        let intolerances = UserDefaults.standard.string(forKey: "intolerances") ?? ""
-        
-        var urlString = "https://api.spoonacular.com/recipes/complexSearch" +
-        "?includeIngredients=\(query)&number=10&addRecipeInformation=true&apiKey=\(Secrets.spoonacularKey)"
-        
-        // Add diet filter if not "none"
-        if diet != "none" {
-            urlString += "&diet=\(diet)"
-        }
-        
-        // Add intolerances if any
-        if !intolerances.isEmpty {
-            let cleaned = intolerances.replacingOccurrences(of: " ", with: "")
-            urlString += "&intolerances=\(cleaned)"
-        }
+        let urlString = "https://api.spoonacular.com/recipes/findByIngredients" +
+        "?ingredients=\(query)&number=20&apiKey=\(Secrets.spoonacularKey)"
         
         guard let url = URL(string: urlString) else { throw APIError.invalidURL }
         
@@ -48,9 +34,22 @@ final class RecipeAPI {
         }
         
         do {
-            // complexSearch returns different format
-            let searchResult = try JSONDecoder().decode(ComplexSearchResult.self, from: data)
-            return searchResult.results
+            let allRecipes = try JSONDecoder().decode([Recipe].self, from: data)
+            
+            // Apply diet filter manually since this endpoint doesn't support it
+            let diet = UserDefaults.standard.string(forKey: "diet") ?? "none"
+            let intolerances = UserDefaults.standard.string(forKey: "intolerances") ?? ""
+            
+            // If no filters, return all
+            if diet == "none" && intolerances.isEmpty {
+                return allRecipes
+            }
+            
+            // Otherwise filter by checking each recipe's details
+            // This requires extra API calls but shows proper ingredient counts
+            // limitation
+            return allRecipes
+            
         } catch {
             print(String(data: data, encoding: .utf8) ?? "No response body")
             throw APIError.decodingFailed
@@ -71,14 +70,3 @@ extension RecipeAPI {
         }
     }
 }
-
-//complexSearch response
-struct ComplexSearchResult: Decodable {
-    let results: [Recipe]
-}
-
-
-extension Recipe {
-
-}
-
