@@ -120,15 +120,23 @@ final class RecipeHistoryDB {
         guard let db = db else { return [] }
         
         do {
-            let query = searchHistory
-                .select(searchQuery, count(searchQuery))
-                .group(searchQuery)
-                .order(count(searchQuery).desc)
-                .limit(limit)
+            // Use raw SQL for COUNT
+            let sql = """
+                SELECT search_query, COUNT(*) as count
+                FROM search_history
+                GROUP BY search_query
+                ORDER BY count DESC
+                LIMIT ?
+            """
             
+            let statement = try db.prepare(sql, limit)
             var results: [(String, Int)] = []
-            for row in try db.prepare(query) {
-                results.append((row[searchQuery], Int(row[count(searchQuery)])))
+            
+            for row in statement {
+                if let query = row[0] as? String,
+                   let count = row[1] as? Int64 {
+                    results.append((query, Int(count)))
+                }
             }
             return results
         } catch {
@@ -233,13 +241,23 @@ final class RecipeHistoryDB {
     /// Get total number of searches performed
     func getTotalSearchCount() -> Int {
         guard let db = db else { return 0 }
-        return (try? db.scalar(searchHistory.count)) ?? 0
+        do {
+            return try db.scalar(searchHistory.count)
+        } catch {
+            print("Error getting search count: \(error)")
+            return 0
+        }
     }
     
     /// Get total number of unique recipes viewed
     func getUniqueRecipeViewCount() -> Int {
         guard let db = db else { return 0 }
-        return (try? db.scalar(viewedRecipes.count)) ?? 0
+        do {
+            return try db.scalar(viewedRecipes.count)
+        } catch {
+            print("Error getting recipe count: \(error)")
+            return 0
+        }
     }
 }
 

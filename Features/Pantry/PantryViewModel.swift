@@ -13,6 +13,7 @@ final class PantryViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var quantity: String = ""
     @Published var unit: String = ""
+    @Published var isSyncing = false
 
     private let context: NSManagedObjectContext
 
@@ -35,17 +36,36 @@ final class PantryViewModel: ObservableObject {
             FirestoreSync.shared.pushPantryItem(item) // sync to Firebase
             clearForm()
         } catch {
-            print("❌ Failed to save item: \(error)")
+            print("Failed to save item: \(error)")
         }
     }
 
     func deleteItem(_ item: PantryItem) {
+        let itemId = item.id
         context.delete(item)
         do {
             try context.save()
-            // Firestore delete could be added here if needed
+            // Delete from Firestore
+            if let id = itemId {
+                FirestoreSync.shared.deletePantryItem(id: id)
+            }
         } catch {
-            print("❌ Delete failed: \(error)")
+            print("Delete failed: \(error)")
+        }
+    }
+    
+    func syncWithCloud() {
+        isSyncing = true
+        FirestoreSync.shared.syncPantryItems(context: context) { result in
+            Task { @MainActor in
+                self.isSyncing = false
+                switch result {
+                case .success(let count):
+                    print("Synced \(count) pantry items")
+                case .failure(let error):
+                    print("Sync failed: \(error)")
+                }
+            }
         }
     }
 

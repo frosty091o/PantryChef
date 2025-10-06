@@ -10,6 +10,8 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var locationManager = LocationManager()
+    @State private var showStoreSearch = false
 
     var body: some View {
         NavigationStack {
@@ -24,6 +26,16 @@ struct ContentView: View {
                     .tabItem { Label("Favourites", systemImage: "heart") }
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    // Quick access to find stores - useful for shopping
+                    Button {
+                        locationManager.request()
+                        showStoreSearch = true
+                    } label: {
+                        Label("Find Stores", systemImage: "map")
+                    }
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gearshape")
@@ -31,6 +43,13 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("PantryChef")
+            .sheet(isPresented: $showStoreSearch) {
+                NearbyStoresView(userCoordinate: locationManager.coordinate, searchQuery: "supermarket")
+            }
+        }
+        .task {
+            // Request location permission on app start
+            locationManager.request()
         }
     }
 }

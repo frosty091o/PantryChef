@@ -29,9 +29,15 @@ struct SettingsView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
             }
+            
+            Section("Analytics") {
+                NavigationLink(destination: AnalyticsView()) {
+                    Label("View Analytics", systemImage: "chart.bar")
+                }
+            }
 
             Section("App") {
-                Toggle("I’ve completed onboarding", isOn: $hasOnboarded)
+                Toggle("I've completed onboarding", isOn: $hasOnboarded)
             }
         }
         .navigationTitle("Settings")
