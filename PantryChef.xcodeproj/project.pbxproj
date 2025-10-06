@@ -23,6 +23,7 @@
 		AA3628F72E902D7400E432AF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628F62E902D7400E432AF /* FirebaseCore */; };
 		AA3628F92E902D7400E432AF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628F82E902D7400E432AF /* FirebaseDatabase */; };
 		AA3628FB2E902D7400E432AF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AA3628FA2E902D7400E432AF /* FirebaseFirestore */; };
+		AA3629722E93AFAF00E432AF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AA36296C2E93AFAF00E432AF /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		AA3628542E8EEDA900E432AF /* PantryChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PantryChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3628682E8EEDAB00E432AF /* PantryChefTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PantryChefTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3628722E8EEDAB00E432AF /* PantryChefUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PantryChefUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA36296C2E93AFAF00E432AF /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -143,6 +145,7 @@
 		AA36284B2E8EEDA900E432AF = {
 			isa = PBXGroup;
 			children = (
+				AA36296C2E93AFAF00E432AF /* README.md */,
 				AA3628AE2E8EF21900E432AF /* Resources */,
 				AA3628AD2E8EF21400E432AF /* Support */,
 				AA3628AC2E8EF20E00E432AF /* Data */,
@@ -310,6 +313,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3629722E93AFAF00E432AF /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
